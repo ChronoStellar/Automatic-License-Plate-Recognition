@@ -3,10 +3,11 @@ import cv2
 from ultralytics import YOLO
 
 # Load the YOLO11 model
-model = YOLO("./best.pt")
+model = YOLO("./yolov8n.pt")
 
 # Open the video file
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('http://192.168.0.11/mjpeg/1')
+# cap = cv2.VideoCapture(0)
 
 # Loop through the video frames
 while cap.isOpened():
