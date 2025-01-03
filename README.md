@@ -79,7 +79,7 @@ This project leverages insights from previous works:
     - Relatively slower compared to non-recurrent transformer-based models in scenarios requiring complex attention mechanisms.
     - Link: [https://www.mdpi.com/2078-2489/14/7/369](https://www.mdpi.com/2078-2489/14/7/369)
 4. **TrOCR: Transformer-Based Optical Character Recognition with Pre-trained Models**
-    - Doesn’t use the usual CNN, instead it uses transformer model as the encoder (image transformer model) and decoder (text transformer model).
+    - Doesn’t use the usual CNN, instead it uses transformer model as the encoder (./images/image transformer model) and decoder (text transformer model).
     - Uses wordpiece instead of character-based method (like in CTC) as the basic unit for more efficient resource usage.
     - TrOCR achieves state-of-the-art results on printed (which is good in our scenario), handwritten and scene text recognition with just a simple encoder-decoder model, without any post-processing steps.
     - Transformer often is slower and resource intensive when dealing with images than CNN model.
@@ -182,11 +182,11 @@ pip install -r requirements.txt
 - In this experiment, since the goal was to ultimately create a real time capable system, we found the need to first localized plates from the original image first.
     
     
-    ![8.1.a Image of a car in urban settings, presumably right outside the vehicle entrance gate](image.png)
+    ![8.1.a Image of a car in urban settings, presumably right outside the vehicle entrance gate](./images/image.png)
     
     8.1.a Image of a car in urban settings, presumably right outside the vehicle entrance gate
     
-    ![8.1.b localized image of the plate from original image](image%201.png)
+    ![8.1.b localized image of the plate from original image](./images/image%201.png)
     
     8.1.b localized image of the plate from original image
     
@@ -195,11 +195,11 @@ pip install -r requirements.txt
 - Therefore, a detection model is needed. Here we decided to use Yolov8n to detect license plates to be localized (Identifies and isolates the specific area in the frame containing the license plate.) We fine-tuned our model using this dataset https://www.kaggle.com/datasets/imamdigmi/indonesian-plate-number which is publicly available.
     
     
-    ![8.1.c example of detection](image%202.png)
+    ![8.1.c example of detection](./images/image%202.png)
     
     8.1.c example of detection
     
-    ![8.1.d Confusion matrix of finetuned model](image%203.png)
+    ![8.1.d Confusion matrix of finetuned model](./images/image%203.png)
     
     8.1.d Confusion matrix of finetuned model
     
@@ -223,22 +223,22 @@ This is because they require different kind on training input so to change or ad
     
     Given this template we will match it to the image to the left
     
-    ![image.png](image%204.png)
+    ![image.png](./images/image%204.png)
     
-    ![image.png](image%205.png)
+    ![image.png](./images/image%205.png)
     
 - Template matching’s algorithm in OpenCV can be summed as a technique for locating a smaller template image within a larger input image by sliding the template over the input, similar to 2D convolution. The `cv.matchTemplate()` function computes a comparison score for each position, resulting in a grayscale output where each pixel represents the match quality of that region to the template. If the input image has dimensions (W, H) and the template is (w, h), the output size will be (W-w+1, H-h+1). 
 To pinpoint the best match location, `cv.minMaxLoc()` identifies the pixel with the highest (or lowest) score, marking this pixel as the top-left corner of the template’s matching region, with (w, h) defining the rectangle’s dimensions.
 - Since we’re dealing with OCR here the templates are individual letters. We scrap the fonts/letter that Indonesian license plate uses and save them in our GitHub repository. To make the computing lighter we use only 10 images with variance for each class. Here is the example of the template we use.
     
     
-    ![image.png](image%206.png)
+    ![image.png](./images/image%206.png)
     
-    ![image.png](image%207.png)
+    ![image.png](./images/image%207.png)
     
-    ![image.png](image%208.png)
+    ![image.png](./images/image%208.png)
     
-    ![image.png](image%209.png)
+    ![image.png](./images/image%209.png)
     
     These letters are scrapped from Kaggle datasets:
     
@@ -258,11 +258,11 @@ To pinpoint the best match location, `cv.minMaxLoc()` identifies the pixel with 
 - Results:
     - Bounding Box and prediction
         
-        ![image.png](image%2010.png)
+        ![image.png](./images/image%2010.png)
         
     - Inference Example and Accuracy
         
-        ![image.png](image%2011.png)
+        ![image.png](./images/image%2011.png)
         
         `wer: 1.0, cer: 0.7582417582417582`
         
@@ -274,7 +274,7 @@ reference: https://docs.opencv.org/3.4/d4/dc6/tutorial_py_template_matching.html
 - If template matching was just a simple algorithm, now we use a feature extraction and machine learning model with HOG and logistic regression. However, we still need to classify each letter individually
 - Histogram of Gradient or HOG is a feature engineering technique by dividing the pixel of selected image into grids.  After that, the direction is extracted by analyzing the pixel density in each grid, creating the gradient magnitude and direction. The gradient magnitude is obtained by getting the root of the squared horizontal and vertical gradient (change in intensity). Then for each cell, a histogram is built by binning the orientation (kind of like quantization in histeq several course behind). The direction is computed by using an arctan formula of the horizontal and vertical gradient. In short, HOG extract the gradient and orientation of the image.
     
-    ![image.png](image%2012.png)
+    ![image.png](./images/image%2012.png)
     
 - Logistic Regression is a machine learning model that use regression to fit a line barrier between the class that will separate each class. It works like a 1 neuron neural network, by first taking the sum function and applying activation function at the end.
     
@@ -297,13 +297,13 @@ reference: https://docs.opencv.org/3.4/d4/dc6/tutorial_py_template_matching.html
 - Since HOG + logistic regression and template matching requires different kind of dataset we diversify the data that we use the data here https://www.kaggle.com/datasets/caasperart/haarcascadeplatenumber?select=H3141NB.jpg, while template matching works better with whole fonts, HOG works better with a large amount of data with variety
     
     
-    ![image.png](image%2013.png)
+    ![image.png](./images/image%2013.png)
     
-    ![image.png](image%2014.png)
+    ![image.png](./images/image%2014.png)
     
-    ![image.png](image%2015.png)
+    ![image.png](./images/image%2015.png)
     
-    ![image.png](image%2016.png)
+    ![image.png](./images/image%2016.png)
     
 - The steps we employ is these experiments are:
     - Download and organize the dataset using the Kaggle API, and extract HOG features with labels based on directory structure.
@@ -314,11 +314,11 @@ reference: https://docs.opencv.org/3.4/d4/dc6/tutorial_py_template_matching.html
 - Results:
     - Prediction + bounding box examples
         
-        ![image.png](image%2017.png)
+        ![image.png](./images/image%2017.png)
         
     - Inference Example and Accuracy
         
-        ![image.png](image%2018.png)
+        ![image.png](./images/image%2018.png)
         
         `wer: 0.84, cer: 0.2677595628415301`
         
@@ -328,7 +328,7 @@ reference: https://docs.opencv.org/3.4/d4/dc6/tutorial_py_template_matching.html
 - Before we explored OCR with traditional and machine learning methods. Now, we will go into a more modern approach using neural networks. One such approach is by using CRNN. By using such model, we can now recognize the whole plate instead of individual letters.
 - CRNN is a combination of 2 kinds of neural network, CNN and RNN and CTC as the loss function
     
-    ![CRNN architecture](image%2019.png)
+    ![CRNN architecture](./images/image%2019.png)
     
     CRNN architecture
     
@@ -342,11 +342,11 @@ reference: https://docs.opencv.org/3.4/d4/dc6/tutorial_py_template_matching.html
             - Pooling Layer: Reduces the spatial dimensions but still retain essential information
             - Fully Connected Layer: Connects the flattened output of the previous layers to predict the final class.
             
-            ![image.png](image%2020.png)
+            ![image.png](./images/image%2020.png)
             
         - Convolution involves sliding a small matrix (kernel) over the input tensor to calculate a weighted sum at each spatial location. The purpose of convolution operation is to detect patterns such as edges or textures in an image. For example, Sobel operators as filters to highlight vertical and horizontal edges.
             
-            ![image.png](image%2021.png)
+            ![image.png](./images/image%2021.png)
             
         
         - In CNN, back propagation is also very important. The gradients are efficiently computed using a layer-wise error propagation mechanism so that CNN training is feasible even for larger networks.
@@ -369,7 +369,7 @@ reference: https://docs.opencv.org/3.4/d4/dc6/tutorial_py_template_matching.html
         - RNNs are a type of neural network to handle sequential data. Unlike feedforward networks, RNNs allow information to persist across time steps for feedback loops. RNNs use their internal states to retain information about the previous time steps and is able to model temporal dependencies. However, RNNs have a weakness which is the *vanishing gradient problem.* When training with standard backpropagation through time (BPTT), gradients can vanish exponentially and limits the RNN’s ability to learn long-term dependencies (as noted in the papers’ discussion of error propagation and challenges of standard RNNs).
         - In this case, we use LSTM. LSTM introduce memory cells and gating mechanisms to address the limitations of standard RNNs.
             
-            ![image.png](image%2022.png)
+            ![image.png](./images/image%2022.png)
             
         
          
@@ -452,7 +452,7 @@ reference: https://docs.opencv.org/3.4/d4/dc6/tutorial_py_template_matching.html
             1. Merge repeated labels: Consecutive identical characters are combined
             2. Remove blank characters: A special blank token “-” introduced by CTC is removed to preserve meaningful repetitions.
             
-            ![image.png](image%2023.png)
+            ![image.png](./images/image%2023.png)
             
         
         - **CTC Loss Calculation**
@@ -472,11 +472,11 @@ reference: https://docs.opencv.org/3.4/d4/dc6/tutorial_py_template_matching.html
             
             CTC loss when there is a perfect match
             
-            ![image.png](image%2024.png)
+            ![image.png](./images/image%2024.png)
             
             CTC loss when there is perfect mismatch
             
-            ![image.png](image%2025.png)
+            ![image.png](./images/image%2025.png)
             
             - For perfect match (probability = 1):
                 - Both loss functions give value of 0
@@ -498,24 +498,24 @@ reference: https://docs.opencv.org/3.4/d4/dc6/tutorial_py_template_matching.html
     
     *These process makes it possible for a CRNN model to learn the context/format of the image.
     
-    ![image.png](image%2026.png)
+    ![image.png](./images/image%2026.png)
     
 - As for the dataset we opt to use the same Kaggle dataset as before https://www.kaggle.com/datasets/caasperart/haarcascadeplatenumber?select=H3141NB.jpg, but here we use the whole plate. Before the data can be used however, we need to preprocess the data first.
     
     
     Raw data
     
-    ![AA4103KN.jpg](AA4103KN.jpg)
+    ![AA4103KN.jpg](./images/AA4103KN.jpg)
     
     Localized
     
-    ![AA4103KN.jpg](AA4103KN%201.jpg)
+    ![AA4103KN.jpg](./images/AA4103KN%201.jpg)
     
     By performing this preprocessing task, we were able to get 250 clean and labeled high quality images.
     
     Previously we also tried another dataset https://www.kaggle.com/datasets/firqaaa/indonesian-vehicle-plate-numbers, in this dataset the quality is subpar, but it makes up in quantity because it is semi synthetic (manual edit by changing the numbers) this resulted in 894 somewhat unique data.
     
-    ![image.png](image%2027.png)
+    ![image.png](./images/image%2027.png)
     
     However, we found that this dataset is not good enough in terms of variety and quality, so we decided to drop this dataset.
     
@@ -529,17 +529,17 @@ However, a plain model might not perform very well so we thought of using Mobile
         
         In 100 epochs, we were only able to get `loss: 16.5467 - val_loss: 86.5675`
         
-        ![image.png](image%2028.png)
+        ![image.png](./images/image%2028.png)
         
     - Validation result
         
-        ![image.png](20cd1fdf-d781-45d6-9497-60d180839e3d.png)
+        ![image.png](./images/20cd1fdf-d781-45d6-9497-60d180839e3d.png)
         
         *this is purely to show that the model can somewhat recognize known plates.
         
     - Inference Examples & Accuracy
         
-        ![image.png](image%2029.png)
+        ![image.png](./images/image%2029.png)
         
         `wer: 0.96, cer: 0.6703296703296703`
         
@@ -549,7 +549,7 @@ However, a plain model might not perform very well so we thought of using Mobile
 - For our final model we decided to use a transformer-based model, that is TrOCR. TrOCR was published in 2019 by Microsoft and was released in several forms; small, base, large; printed and handwritten. In our case the printed text models have the most correlation with our project so we decided to fine tune the base printed model. The base model that we’re using was trained on the [**SROIE dataset**](https://rrc.cvc.uab.es/?ch=13). It was introduced in the paper [**TrOCR: Transformer-based Optical Character Recognition with Pre-trained Models**](https://arxiv.org/abs/2109.10282) by Li et al. and first released in [**this repository**](https://github.com/microsoft/unilm/tree/master/trocr), and also in this [hugging face repository](https://huggingface.co/microsoft/trocr-base-printed).
 - TrOCR Architecture
     
-    ![image.png](image%2030.png)
+    ![image.png](./images/image%2030.png)
     
     As we have discussed OCR is quite the complicated task. It requires a complex pipeline with not only detection and recognition model, but also a language model. That’s why a transformer model which is commonly used for NLP task can be used here. TrOCR (Transformer-based Optical Character Recognition) is an advanced OCR model that integrates a vision Transformer (ViT) as the encoder and a text Transformer (BERT-like) as the decoder, forming an encoder-decoder architecture. 
     
@@ -583,11 +583,11 @@ However, a plain model might not perform very well so we thought of using Mobile
 - Results
     - Training Graph
         
-        ![image.png](image%2031.png)
+        ![image.png](./images/image%2031.png)
         
     - Inference Example and accuracy
         
-        ![image.png](image%2032.png)
+        ![image.png](./images/image%2032.png)
         
         `wer: 0.24, cer: 0.038461538461538464`
         
@@ -646,12 +646,12 @@ Although an interesting observation is that with a custom dataset that we made (
 - We also found that data quality matters a lot for our project.
     
     
-    ![image.png](image%2033.png)
+    ![image.png](./images/image%2033.png)
     
     **Previous Dataset**
     Character Localization + Augmentation = **Better HOG model (0.7 WER)**
     
-    ![image.png](image%2034.png)
+    ![image.png](./images/image%2034.png)
     
     **Current Dataset**
     
